@@ -13,13 +13,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('transactions', function (Blueprint $table) {
-            $table->id();
-            $table->foreignIdFor(User::class)->constrained();
+            $table->uuid('id')->primary();
+            $table->foreignUuid('user_id')->constrained();
             $table->string('type'); // expenses(gasto) or income(rendimento/ganho)
             $table->decimal('amount', $precision = 8, $scale = 2);
             $table->string('description');
             $table->dateTime("date_transaction");
-            $table->foreignIdFor(User::class, 'created_by');
+            $table->foreignUuid('created_by');
             $table->timestamps();
         });
     }

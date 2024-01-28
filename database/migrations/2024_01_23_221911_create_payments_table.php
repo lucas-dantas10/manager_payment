@@ -14,11 +14,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('payments', function (Blueprint $table) {
-            $table->id();
-            $table->foreignIdFor(Transaction::class);
+            $table->uuid('id')->primary();
+            $table->foreignUuid('user_id');
             $table->string('payment_method'); // cc(cartao) or pix or boleto
             $table->string('status'); // pago, não pago, pendente
-            $table->foreignIdFor(User::class, 'created_by');
+            $table->foreignUuid('created_by');
             $table->timestamps();
         });
     }

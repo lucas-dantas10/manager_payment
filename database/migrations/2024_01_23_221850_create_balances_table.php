@@ -13,11 +13,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('balances', function (Blueprint $table) {
-            $table->id();
-            $table->foreignIdFor(User::class)->constrained();
+            $table->uuid('id')->primary();
+            $table->foreignUuid('user_id')->constrained;
             $table->decimal('total_amount', $precision = 8, $scale = 2);
-            $table->foreignIdFor(User::class, 'created_by');
-            $table->foreignIdFor(User::class, 'updated_by');
+            $table->foreignUuid('created_by');
+            $table->foreignUuid('updated_by');
             $table->timestamps();
         });
     }
