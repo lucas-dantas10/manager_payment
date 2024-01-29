@@ -17,9 +17,11 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $user = User::create([
+            'id' => fake()->uuid,
             'name' => config('app.admin.name'),
             'email' => config('app.admin.email'),
             'password' => config('app.admin.password'),
+            'email_verified_at' => now(),
             'is_admin' => true,
         ]);
 
