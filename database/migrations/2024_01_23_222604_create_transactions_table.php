@@ -14,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('user_id')->constrained();
+            $table->foreignUuid('user_id');
             $table->string('type'); // expenses(gasto) or income(rendimento/ganho)
             $table->decimal('amount', $precision = 8, $scale = 2);
             $table->string('description');

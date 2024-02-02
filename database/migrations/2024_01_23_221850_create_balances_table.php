@@ -14,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('balances', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('user_id')->constrained;
+            $table->foreignUuid('user_id');
             $table->decimal('total_amount', $precision = 8, $scale = 2);
             $table->foreignUuid('created_by');
             $table->foreignUuid('updated_by');
