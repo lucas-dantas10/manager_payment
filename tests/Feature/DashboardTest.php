@@ -7,10 +7,8 @@ use Filament\Pages\Dashboard;
 use Illuminate\Database\Eloquent\Collection;
 
 use function Pest\Laravel\get;
-use function PHPUnit\Framework\assertIsArray;
 use function PHPUnit\Framework\assertIsInt;
 use function PHPUnit\Framework\assertIsNumeric;
-use function PHPUnit\Framework\assertSame;
 
 uses()->group('dashboard');
 
