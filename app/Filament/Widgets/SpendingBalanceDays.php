@@ -13,9 +13,9 @@ class SpendingBalanceDays extends ChartWidget
 
     protected function getData(): array
     {
-        $query = Transaction::query();
+        $query = Transaction::where('user_id', auth()->user()->id);
 
-        $data = Trend::model(Transaction::class)
+        $data = Trend::query($query)
             ->between(
                 start: now()->startOfYear(),
                 end: now()->endOfYear(),
