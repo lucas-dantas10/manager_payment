@@ -5,8 +5,9 @@ namespace App\Filament\Resources;
 use App\Enums\TransactionTypes;
 use App\Filament\Resources\TransactionResource\Pages;
 use App\Models\Transaction;
-use App\Models\User;
+use Carbon\Carbon;
 use Filament\Forms;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -14,7 +15,6 @@ use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class TransactionResource extends Resource
 {
@@ -28,19 +28,40 @@ class TransactionResource extends Resource
     {
         return $form
             ->schema([
+                Forms\Components\TextInput::make('amount')
+                    ->label('Valor da Transação')
+                    ->numeric()
+                    ->inputMode('decimal')
+                    ->placeholder('0.00')
+                    ->required(),
                 Forms\Components\Select::make('type')
+                    ->label('Tipo')
                     ->options([
                         'income' => 'Receita',
                         'expense' => 'Gasto',
                     ])
                     ->required(),
-                Forms\Components\TextInput::make('amount')
-                    ->label('Valor da Transação')
-                    ->required()
-                    ->numeric(),
+                Forms\Components\Select::make('payment_method')
+                    ->label('Método de Pagamento')
+                    ->options([
+                        'cc' => 'Cartão de Crédito',
+                        'cd' => 'Cartão de Débito',
+                        'p' => 'Pix',
+                        'b' => 'Boleto',
+                    ])
+                    ->required(),
+                Forms\Components\Select::make('status')
+                    ->label('Status')
+                    ->options([
+                        'pay' => 'Pago',
+                        'not_pay' => 'Não Pago',
+                        'pending' => 'Pendente',
+                    ])
+                    ->required(),
                 Forms\Components\TextInput::make('description')
                     ->label('Valor da Descrição')
                     ->required()
+                    ->placeholder('Pagamento faculdade')
                     ->maxLength(255),
                 Forms\Components\DateTimePicker::make('date_transaction')
                     ->label('Data da Transação')
@@ -61,7 +82,7 @@ class TransactionResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('type')
                     ->label('Tipo')
-                    ->description(fn (Transaction $record): string => $record->type == TransactionTypes::EXPENSE->value ? 'Gasto' : 'Receita'  )
+                    ->description(fn (Transaction $record): string => $record->type == TransactionTypes::EXPENSE->value ? 'Gasto' : 'Receita')
                     ->color(fn (Transaction $record): string => $record->type == TransactionTypes::EXPENSE->value ? 'danger' : 'success')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('amount')
@@ -73,7 +94,7 @@ class TransactionResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('date_transaction')
                     ->label('Data da transação')
-                    ->dateTime()
+                    ->since()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Criado em')
@@ -92,7 +113,18 @@ class TransactionResource extends Resource
                     ->options([
                         'expense' => 'Gastos',
                         'income' => 'Receita',
-                    ])
+                    ]),
+                Filter::make('date_transaction')
+                    ->label('Data da Transação')
+                    ->form([
+                        DatePicker::make('date_transaction')
+                            ->label('Data da Transação')
+                            ->format('d/m/Y'),
+                    ])->query(function (Builder $query, array $data): Builder {
+                            $date = $data['date_transaction'];
+                            return $query
+                                ->where('date_transaction', 'like', "%{$date}%");
+                        })
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
