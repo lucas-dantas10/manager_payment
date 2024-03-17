@@ -134,7 +134,13 @@ class TransactionResource extends Resource
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ])
-            ->modifyQueryUsing(fn (Builder $query) => $query->where('user_id', auth()->user()->id));
+            ->modifyQueryUsing(function(Builder $query) {
+                if (auth()->user()->is_admin) {
+                    return $query->with('payment');
+                }
+
+                return $query->where('user_id', auth()->user()->id);
+            });
     }
 
     public static function getRelations(): array

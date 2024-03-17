@@ -6,6 +6,8 @@ use App\Enums\TransactionTypes as EnumsTransactionTypes;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use TransactionTypes;
 
 class Transaction extends Model
@@ -14,9 +16,14 @@ class Transaction extends Model
 
     protected $fillable = [ 'type', 'amount', 'description', 'user_id', 'date_transaction', 'created_by' ];
 
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function payment(): HasOne
+    {
+        return $this->hasOne(Payment::class);
     }
 
     protected static function booted(): void
