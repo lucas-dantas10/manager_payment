@@ -16,13 +16,12 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $user = User::create([
+        $user = User::factory()->create([
             'id' => fake()->uuid,
             'name' => config('app.admin.name'),
             'email' => config('app.admin.email'),
             'password' => config('app.admin.password'),
-            'email_verified_at' => now(),
-            'is_admin' => true,
+            'is_admin' => config('app.admin.is_admin'),
         ]);
 
         Balance::create([

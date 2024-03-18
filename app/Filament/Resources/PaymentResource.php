@@ -99,11 +99,11 @@ class PaymentResource extends Resource
                             WHEN status = 'not_pay' THEN 'Não Pago'
                             ELSE status
                         END AS status"),
-                        // 'status',
                         'created_by',
                         'created_at',
                         'updated_at'
-                    );
+                    )
+                    ->where('user_id', auth()->id());
             });
     }
 

@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('payments', function (Blueprint $table) {
             $table->uuid('id')->primary();
+            $table->foreignUuid('user_id');
             $table->foreignUuid('transaction_id');
             $table->string('payment_method'); // cc(cartao) or pix or boleto
             $table->string('status'); // pago, não pago, pendente

@@ -27,6 +27,7 @@ class CreateTransaction extends CreateRecord
         $transaction = Transaction::create($data);
 
         Payment::create([
+            'user_id' => auth()->id(),
             'transaction_id' => $transaction->id,
             'payment_method' => $data['payment_method'],
             'status' => $data['status'],

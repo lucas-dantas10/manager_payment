@@ -11,7 +11,7 @@ class Payment extends Model
 {
     use HasFactory, HasUuids;
 
-    protected $fillable = [ 'status', 'transaction_id', 'payment_method', 'created_by', 'created_at' ];
+    protected $fillable = [ 'user_id', 'status', 'transaction_id', 'payment_method', 'created_by', 'created_at' ];
 
     public function transaction(): BelongsTo
     {

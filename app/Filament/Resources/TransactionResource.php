@@ -15,6 +15,7 @@ use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 
 class TransactionResource extends Resource
 {
@@ -82,8 +83,7 @@ class TransactionResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('type')
                     ->label('Tipo')
-                    ->description(fn (Transaction $record): string => $record->type == TransactionTypes::EXPENSE->value ? 'Gasto' : 'Receita')
-                    ->color(fn (Transaction $record): string => $record->type == TransactionTypes::EXPENSE->value ? 'danger' : 'success')
+                    ->color(fn (Transaction $record): string => $record->type == 'Gasto' ? 'danger' : 'success')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('amount')
                     ->label('Valor')
@@ -135,11 +135,25 @@ class TransactionResource extends Resource
                 ]),
             ])
             ->modifyQueryUsing(function(Builder $query) {
-                if (auth()->user()->is_admin) {
-                    return $query->with('payment');
-                }
+                // return $query->where('user_id', auth()->user()->id);
 
-                return $query->where('user_id', auth()->user()->id);
+                $query
+                    ->select(
+                        'id',
+                        'type',
+                        DB::raw("CASE 
+                            WHEN type = 'expense' THEN 'Gasto'
+                            WHEN type = 'income' THEN 'Receita'
+                        END AS type"),
+                        'user_id',
+                        'amount',
+                        'description',
+                        'created_at',
+                        'updated_at',
+                        'created_by',
+                        'date_transaction',
+                       
+                    );
             });
     }
 
